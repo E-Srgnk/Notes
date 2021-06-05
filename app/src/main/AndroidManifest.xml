@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SimpleNotes">
-        <activity android:name=".ui.activity.AppActivity">
+        <activity android:name=".ui.activity.AppActivity"
+            android:theme="@style/Theme.SimpleNotes.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
