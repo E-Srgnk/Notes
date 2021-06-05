@@ -23,4 +23,9 @@ class AppActivity : MvpAppCompatActivity(), AppView {
             .replace(R.id.appFrame, screen, screen::class.simpleName)
             .commit()
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+    }
 }

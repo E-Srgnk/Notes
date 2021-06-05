@@ -2,6 +2,7 @@ package com.srgnk.simplenotes.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
 import com.srgnk.simplenotes.R
 import com.srgnk.simplenotes.mvp.presenter.MainPresenter
 import com.srgnk.simplenotes.mvp.view.MainView
@@ -20,5 +21,13 @@ class MainScreen: MvpAppCompatFragment(R.layout.fragment_main), MainView {
 
         (activity as AppActivity).setSupportActionBar(toolbar)
         (activity as AppActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        addNewNote.setOnClickListener {
+            presenter.clickedFubButton()
+        }
+    }
+
+    override fun showFragment(screen: Fragment) {
+        (activity as AppActivity).showFragment(screen)
     }
 }
