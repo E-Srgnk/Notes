@@ -7,6 +7,7 @@ import com.github.terrakok.cicerone.androidx.AppNavigator
 import com.srgnk.simplenotes.R
 import com.srgnk.simplenotes.mvp.presenter.AppPresenter
 import com.srgnk.simplenotes.mvp.view.AppView
+import com.srgnk.simplenotes.ui.navigation.CustomNavigator
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -24,7 +25,7 @@ class AppActivity : MvpAppCompatActivity(), HasAndroidInjector, AppView {
 
     @Inject
     lateinit var navigationHolder: NavigatorHolder
-    private val navigator: Navigator = AppNavigator(this, R.id.appFrame)
+    private val navigator: Navigator = CustomNavigator(this, R.id.appFrame)
 
     @Inject
     lateinit var injector: DispatchingAndroidInjector<Any>
