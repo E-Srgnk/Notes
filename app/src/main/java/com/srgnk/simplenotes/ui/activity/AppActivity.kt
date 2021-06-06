@@ -1,31 +1,48 @@
 package com.srgnk.simplenotes.ui.activity
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import com.github.terrakok.cicerone.Navigator
+import com.github.terrakok.cicerone.NavigatorHolder
+import com.github.terrakok.cicerone.androidx.AppNavigator
 import com.srgnk.simplenotes.R
 import com.srgnk.simplenotes.mvp.presenter.AppPresenter
 import com.srgnk.simplenotes.mvp.view.AppView
+import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import moxy.MvpAppCompatActivity
-import moxy.presenter.InjectPresenter
+import moxy.ktx.moxyPresenter
+import javax.inject.Inject
+import javax.inject.Provider
 
-class AppActivity : MvpAppCompatActivity(), AppView {
+class AppActivity : MvpAppCompatActivity(), HasAndroidInjector, AppView {
 
-    @InjectPresenter
-    lateinit var presenter: AppPresenter
+    @Inject
+    lateinit var presenterProvider: Provider<AppPresenter>
+    private val presenter by moxyPresenter { presenterProvider.get() }
+
+    @Inject
+    lateinit var navigationHolder: NavigatorHolder
+    private val navigator: Navigator = AppNavigator(this, R.id.appFrame)
+
+    @Inject
+    lateinit var injector: DispatchingAndroidInjector<Any>
+    override fun androidInjector(): AndroidInjector<Any> = injector
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app)
     }
 
-    override fun showFragment(screen: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.appFrame, screen, screen::class.simpleName)
-            .commit()
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        navigationHolder.setNavigator(navigator)
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-
+    override fun onPause() {
+        navigationHolder.removeNavigator()
+        super.onPause()
     }
 }

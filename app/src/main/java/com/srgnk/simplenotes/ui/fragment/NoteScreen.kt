@@ -1,5 +1,6 @@
 package com.srgnk.simplenotes.ui.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -10,14 +11,24 @@ import com.srgnk.simplenotes.R
 import com.srgnk.simplenotes.mvp.presenter.NotePresenter
 import com.srgnk.simplenotes.mvp.view.NoteView
 import com.srgnk.simplenotes.ui.activity.AppActivity
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_main.*
 import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
 import moxy.presenter.InjectPresenter
+import javax.inject.Inject
+import javax.inject.Provider
 
 class NoteScreen: MvpAppCompatFragment(R.layout.fragment_note), NoteView {
 
-    @InjectPresenter
-    lateinit var presenter: NotePresenter
+    @Inject
+    lateinit var providePresenter: Provider<NotePresenter>
+    private val presenter by moxyPresenter { providePresenter.get() }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        AndroidSupportInjection.inject(this)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,9 +53,4 @@ class NoteScreen: MvpAppCompatFragment(R.layout.fragment_note), NoteView {
         menu.findItem(R.id.save_note).isVisible = false
         super.onPrepareOptionsMenu(menu)
     }
-
-    override fun showFragment(screen: Fragment) {
-        (activity as AppActivity).showFragment(screen)
-    }
-
 }

@@ -8,6 +8,6 @@ import moxy.viewstate.strategy.StateStrategyType
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface NoteView: MvpView {
 
-    fun showFragment(screen: Fragment)
+
 
 }
