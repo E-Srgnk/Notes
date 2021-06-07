@@ -14,7 +14,6 @@ import com.srgnk.simplenotes.mvp.presenter.NotePresenter
 import com.srgnk.simplenotes.mvp.view.NoteView
 import com.srgnk.simplenotes.ui.activity.AppActivity
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_main.toolbar
 import kotlinx.android.synthetic.main.fragment_note.*
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
@@ -41,12 +40,12 @@ class NoteScreen : MvpAppCompatFragment(R.layout.fragment_note), NoteView {
         (activity as AppActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setHasOptionsMenu(true)
 
-        title.addTextChangedListener {
+        title_note.addTextChangedListener {
             presenter.textChanged(currentTitle(), currentContent()) }
-        content.addTextChangedListener {
+        content_note.addTextChangedListener {
             presenter.textChanged(currentTitle(), currentContent()) }
 
-        title.requestFocus()
+        title_note.requestFocus()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -68,8 +67,12 @@ class NoteScreen : MvpAppCompatFragment(R.layout.fragment_note), NoteView {
         super.onPrepareOptionsMenu(menu)
     }
 
-    private fun currentTitle() = title.text.toString()
-    private fun currentContent() = content.text.toString()
+    private fun currentTitle() = title_note.text.toString()
+    private fun currentContent() = content_note.text.toString()
+
+    override fun setDate(date: String) {
+        date_note.text = date
+    }
 
     override fun showKeyboard() {
         activity?.let {

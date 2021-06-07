@@ -4,6 +4,7 @@ import com.github.terrakok.cicerone.Router
 import com.srgnk.simplenotes.R
 import com.srgnk.simplenotes.mvp.model.Note
 import com.srgnk.simplenotes.mvp.model.NoteDatabase
+import com.srgnk.simplenotes.mvp.utils.getFormattedDate
 import com.srgnk.simplenotes.mvp.view.NoteView
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -25,6 +26,7 @@ class NotePresenter @Inject constructor(
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.showKeyboard()
+        viewState.setDate(getFormattedDate(createDate))
     }
 
     fun clickedArrowHome() {

@@ -8,6 +8,8 @@ import moxy.viewstate.strategy.alias.Skip
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface NoteView: MvpView {
 
+    fun setDate(date: String)
+
     fun showKeyboard()
 
     fun hideKeyboard()
