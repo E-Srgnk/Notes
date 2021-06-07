@@ -64,4 +64,7 @@ dependencies {
     implementation 'com.google.dagger:dagger-android:2.35.1'
     implementation 'com.google.dagger:dagger-android-support:2.33'
     kapt 'com.google.dagger:dagger-android-processor:2.33'
+
+    // RxJava
+    implementation 'io.reactivex.rxjava3:rxjava:3.0.12'
 }

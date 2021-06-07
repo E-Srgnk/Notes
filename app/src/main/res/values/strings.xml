@@ -6,4 +6,6 @@
     <string name="text">Текст</string>
     <string name="save_note">сохранить</string>
     <string name="menu_item_delete_note">delete</string>
+    <string name="note_saved">заметка сохранена</string>
+    <string name="note_deleted">заметка удалена</string>
 </resources>

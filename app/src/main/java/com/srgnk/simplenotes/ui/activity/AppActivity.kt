@@ -3,7 +3,6 @@ package com.srgnk.simplenotes.ui.activity
 import android.os.Bundle
 import com.github.terrakok.cicerone.Navigator
 import com.github.terrakok.cicerone.NavigatorHolder
-import com.github.terrakok.cicerone.androidx.AppNavigator
 import com.srgnk.simplenotes.R
 import com.srgnk.simplenotes.mvp.presenter.AppPresenter
 import com.srgnk.simplenotes.mvp.view.AppView
