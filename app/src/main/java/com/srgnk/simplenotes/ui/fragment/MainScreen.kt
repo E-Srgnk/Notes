@@ -3,6 +3,7 @@ package com.srgnk.simplenotes.ui.fragment
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import com.srgnk.simplenotes.R
 import com.srgnk.simplenotes.mvp.model.Note
@@ -37,6 +38,10 @@ class MainScreen : MvpAppCompatFragment(R.layout.fragment_main),
 
         addNewNote.setOnClickListener {
             presenter.clickedFubButton()
+        }
+
+        searchNote.addTextChangedListener {
+            presenter.searchNotes(searchNote.text.toString())
         }
     }
 

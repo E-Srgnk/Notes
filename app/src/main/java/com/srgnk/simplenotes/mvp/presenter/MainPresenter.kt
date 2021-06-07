@@ -37,6 +37,16 @@ class MainPresenter @Inject constructor(
 
     }
 
+    fun searchNotes(request: String) {
+        getAllNotes()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { notes ->
+                val foundNotes = notes.filter { it.title.contains(request, ignoreCase = true) }
+                viewState.initAdapter(foundNotes.toMutableList())
+            }
+    }
+
     private fun getAllNotes(): Observable<MutableList<Note>> {
         return Observable.create { subscriber ->
             val notes = db.noteDao().getAllNotes()
