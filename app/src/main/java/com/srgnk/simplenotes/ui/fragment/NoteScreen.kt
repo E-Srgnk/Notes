@@ -9,7 +9,10 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import com.github.terrakok.cicerone.Router
 import com.srgnk.simplenotes.R
+import com.srgnk.simplenotes.mvp.model.Note
+import com.srgnk.simplenotes.mvp.model.NoteDatabase
 import com.srgnk.simplenotes.mvp.presenter.NotePresenter
 import com.srgnk.simplenotes.mvp.view.NoteView
 import com.srgnk.simplenotes.ui.activity.AppActivity
@@ -17,14 +20,23 @@ import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_note.*
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class NoteScreen : MvpAppCompatFragment(R.layout.fragment_note), NoteView {
+class NoteScreen(private var note: Note? = null) : MvpAppCompatFragment(R.layout.fragment_note), NoteView {
 
     @Inject
-    lateinit var providePresenter: Provider<NotePresenter>
-    private val presenter by moxyPresenter { providePresenter.get() }
+    lateinit var router: Router
+
+    @Inject
+    lateinit var db: NoteDatabase
+
+    @InjectPresenter
+    lateinit var presenter: NotePresenter
+    @ProvidePresenter
+    fun providePresenter() = NotePresenter(note, router, db)
 
     private var menu: Menu? = null
 
@@ -72,6 +84,14 @@ class NoteScreen : MvpAppCompatFragment(R.layout.fragment_note), NoteView {
 
     override fun setDate(date: String) {
         date_note.text = date
+    }
+
+    override fun setTitle(title: String) {
+        title_note.append(title)
+    }
+
+    override fun setContent(content: String) {
+        content_note.append(content)
     }
 
     override fun showKeyboard() {

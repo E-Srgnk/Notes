@@ -15,18 +15,21 @@ import javax.inject.Inject
 
 @InjectViewState
 class NotePresenter @Inject constructor(
+    private var note: Note?,
     private val router: Router,
     private val db: NoteDatabase
 ) : MvpPresenter<NoteView>() {
 
     private val createDate: Date by lazy { Date() }
 
-    private var note: Note? = null
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        note?.let {
+            viewState.setTitle(it.title)
+            viewState.setContent(it.content)
+            viewState.setDate(getFormattedDate(Date(it.date)))
+        } ?: viewState.setDate(getFormattedDate(createDate))
         viewState.showKeyboard()
-        viewState.setDate(getFormattedDate(createDate))
     }
 
     fun clickedArrowHome() {
@@ -35,18 +38,41 @@ class NotePresenter @Inject constructor(
     }
 
     fun clickedSaveNote(title: String, content: String) {
+        if (noteIsNotEmpty(title, content)) {
+            saveNote(title, content)
+            viewState.showMessage(R.string.note_saved)
+            viewState.btnSaveVisible(false)
+        } else {
+            deleteNote()
+            router.exit()
+        }
+    }
+
+    private fun saveNote(title: String, content: String) {
         Observable.just(db)
             .subscribeOn(Schedulers.io())
             .subscribe {
-                note = Note(title, content, createDate.time)
+                if (isNewNote()) {
+                    note = Note(title, content, createDate.time)
+                } else {
+                    note?.title = title
+                    note?.content = content
+                    note?.date = Date().time
+                }
                 val noteId = it.noteDao().insert(note!!)
                 note?.id = noteId
             }
-        viewState.showMessage(R.string.note_saved)
-        viewState.btnSaveVisible(false)
     }
 
     fun clickedDeleteNote() {
+        if (isNewNote()) {
+            viewState.hideKeyboard()
+            router.exit()
+        }
+        deleteNote()
+    }
+
+    private fun deleteNote() {
         note?.let { note ->
             Observable.just(db)
                 .subscribeOn(Schedulers.io())
@@ -54,9 +80,6 @@ class NotePresenter @Inject constructor(
                     it.noteDao().delete(note)
                 }
         }
-        viewState.showMessage(R.string.note_deleted)
-        viewState.hideKeyboard()
-        router.exit()
     }
 
     fun textChanged(title: String, content: String) {

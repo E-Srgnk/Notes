@@ -10,6 +10,12 @@ interface NoteView: MvpView {
 
     fun setDate(date: String)
 
+    @Skip
+    fun setTitle(title: String)
+
+    @Skip
+    fun setContent(content: String)
+
     fun showKeyboard()
 
     fun hideKeyboard()

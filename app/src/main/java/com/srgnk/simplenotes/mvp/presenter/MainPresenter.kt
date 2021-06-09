@@ -34,7 +34,12 @@ class MainPresenter @Inject constructor(
     }
 
     fun clickedRecyclerItem(noteId: Long) {
-
+        getNoteById(noteId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { note ->
+                router.navigateTo(FragmentScreen { NoteScreen(note) })
+            }
     }
 
     fun searchNotes(request: String) {
@@ -51,6 +56,14 @@ class MainPresenter @Inject constructor(
         return Observable.create { subscriber ->
             val notes = db.noteDao().getAllNotes()
             subscriber.onNext(notes)
+            subscriber.onComplete()
+        }
+    }
+
+    private fun getNoteById(noteId: Long): Observable<Note> {
+        return Observable.create { subscriber ->
+            val note = db.noteDao().getNoteById(noteId)
+            subscriber.onNext(note)
             subscriber.onComplete()
         }
     }
