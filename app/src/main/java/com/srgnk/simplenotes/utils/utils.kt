@@ -1,4 +1,4 @@
-package com.srgnk.simplenotes.mvp.utils
+package com.srgnk.simplenotes.utils
 
 import java.text.SimpleDateFormat
 import java.util.*

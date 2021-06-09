@@ -3,12 +3,10 @@ package com.srgnk.simplenotes.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.srgnk.simplenotes.R
+import com.srgnk.simplenotes.databinding.NoteBinding
 import com.srgnk.simplenotes.mvp.model.Note
-import com.srgnk.simplenotes.mvp.utils.getFormattedDate
-import kotlinx.android.synthetic.main.note.view.*
+import com.srgnk.simplenotes.utils.getFormattedDate
 import java.util.*
 
 class RecyclerAdapter(
@@ -21,9 +19,8 @@ class RecyclerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val itemView =
-            LayoutInflater.from(parent.context).inflate(R.layout.note, parent, false)
-        return ViewHolder(itemView, itemClickListener)
+        val itemBinding = NoteBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(itemBinding, itemClickListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -34,16 +31,16 @@ class RecyclerAdapter(
 
     override fun getItemCount() = values.size
 
-    inner class ViewHolder(view: View, private val listener: RecyclerViewClickListener) :
-        RecyclerView.ViewHolder(view.rootView),
+    inner class ViewHolder(binding: NoteBinding, private val listener: RecyclerViewClickListener) :
+        RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
 
-        var title: TextView = view.note_title
-        var content: TextView = view.note_content
-        var date: TextView = view.note_date
+        var title = binding.noteTitle
+        var content = binding.noteContent
+        var date = binding.noteDate
 
         init {
-            view.note.setOnClickListener(this)
+            binding.note.setOnClickListener(this)
         }
 
         override fun onClick(v: View) {

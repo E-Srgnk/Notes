@@ -4,7 +4,7 @@ import com.github.terrakok.cicerone.Router
 import com.srgnk.simplenotes.R
 import com.srgnk.simplenotes.mvp.model.Note
 import com.srgnk.simplenotes.mvp.model.NoteDatabase
-import com.srgnk.simplenotes.mvp.utils.getFormattedDate
+import com.srgnk.simplenotes.utils.getFormattedDate
 import com.srgnk.simplenotes.mvp.view.NoteView
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -30,11 +30,6 @@ class NotePresenter @Inject constructor(
             viewState.setDate(getFormattedDate(Date(it.date)))
         } ?: viewState.setDate(getFormattedDate(createDate))
         viewState.showKeyboard()
-    }
-
-    fun clickedArrowHome() {
-        viewState.hideKeyboard()
-        router.exit()
     }
 
     fun clickedSaveNote(title: String, content: String) {
@@ -80,6 +75,11 @@ class NotePresenter @Inject constructor(
                     it.noteDao().delete(note)
                 }
         }
+    }
+
+    fun clickedArrowHome() {
+        viewState.hideKeyboard()
+        router.exit()
     }
 
     fun textChanged(title: String, content: String) {

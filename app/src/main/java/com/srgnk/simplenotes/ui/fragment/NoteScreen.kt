@@ -13,21 +13,23 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import com.github.terrakok.cicerone.Router
 import com.srgnk.simplenotes.R
+import com.srgnk.simplenotes.databinding.FragmentNoteBinding
 import com.srgnk.simplenotes.mvp.model.Note
 import com.srgnk.simplenotes.mvp.model.NoteDatabase
 import com.srgnk.simplenotes.mvp.presenter.NotePresenter
 import com.srgnk.simplenotes.mvp.view.NoteView
 import com.srgnk.simplenotes.ui.activity.AppActivity
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_note.*
 import moxy.MvpAppCompatFragment
-import moxy.ktx.moxyPresenter
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
-import javax.inject.Provider
 
-class NoteScreen(private var note: Note? = null) : MvpAppCompatFragment(R.layout.fragment_note), NoteView {
+class NoteScreen(private var note: Note? = null) : MvpAppCompatFragment(R.layout.fragment_note),
+    NoteView {
+
+    private var noteBinding: FragmentNoteBinding? = null
+    private val binding get() = noteBinding!!
 
     @Inject
     lateinit var router: Router
@@ -37,6 +39,7 @@ class NoteScreen(private var note: Note? = null) : MvpAppCompatFragment(R.layout
 
     @InjectPresenter
     lateinit var presenter: NotePresenter
+
     @ProvidePresenter
     fun providePresenter() = NotePresenter(note, router, db)
 
@@ -50,17 +53,21 @@ class NoteScreen(private var note: Note? = null) : MvpAppCompatFragment(R.layout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppActivity).setSupportActionBar(toolbar)
+        noteBinding = FragmentNoteBinding.bind(view)
+
+        (activity as AppActivity).setSupportActionBar(binding.toolbar)
         (activity as AppActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         (activity as AppActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setHasOptionsMenu(true)
 
-        title_note.addTextChangedListener {
-            presenter.textChanged(currentTitle(), currentContent()) }
-        content_note.addTextChangedListener {
-            presenter.textChanged(currentTitle(), currentContent()) }
+        binding.titleNote.addTextChangedListener {
+            presenter.textChanged(currentTitle(), currentContent())
+        }
+        binding.contentNote.addTextChangedListener {
+            presenter.textChanged(currentTitle(), currentContent())
+        }
 
-        title_note.requestFocus()
+        binding.titleNote.requestFocus()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -82,19 +89,19 @@ class NoteScreen(private var note: Note? = null) : MvpAppCompatFragment(R.layout
         super.onPrepareOptionsMenu(menu)
     }
 
-    private fun currentTitle() = title_note.text.toString()
-    private fun currentContent() = content_note.text.toString()
+    private fun currentTitle() = binding.titleNote.text.toString()
+    private fun currentContent() = binding.contentNote.text.toString()
 
     override fun setTitle(title: String) {
-        title_note.append(title)
+        binding.titleNote.append(title)
     }
 
     override fun setContent(content: String) {
-        content_note.append(content)
+        binding.contentNote.append(content)
     }
 
     override fun setDate(date: String) {
-        date_note.text = date
+        binding.dateNote.text = date
     }
 
     override fun btnSaveVisible(visible: Boolean) {
@@ -146,6 +153,7 @@ class NoteScreen(private var note: Note? = null) : MvpAppCompatFragment(R.layout
     }
 
     override fun onDestroy() {
+        noteBinding = null
         super.onDestroy()
 
         dialogDeleteNote?.setOnDismissListener(null)
