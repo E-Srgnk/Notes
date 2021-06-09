@@ -69,7 +69,7 @@ class NotePresenter @Inject constructor(
             viewState.hideKeyboard()
             router.exit()
         }
-        deleteNote()
+        viewState.showDialogDeleteNote()
     }
 
     private fun deleteNote() {
@@ -90,6 +90,22 @@ class NotePresenter @Inject constructor(
         } else {
             viewState.btnSaveVisible(false)
         }
+    }
+
+    fun confirmDeletionNote() {
+        deleteNote()
+        viewState.showMessage(R.string.note_deleted)
+        viewState.hideDialogDeleteNote()
+        viewState.hideKeyboard()
+        router.exit()
+    }
+
+    fun cancelDeletionNote() {
+        viewState.hideDialogDeleteNote()
+    }
+
+    fun dismissDialog() {
+        viewState.hideDialogDeleteNote()
     }
 
     private fun isNewNote() = note == null

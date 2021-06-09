@@ -7,7 +7,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import com.github.terrakok.cicerone.Router
 import com.srgnk.simplenotes.R
@@ -39,6 +41,7 @@ class NoteScreen(private var note: Note? = null) : MvpAppCompatFragment(R.layout
     fun providePresenter() = NotePresenter(note, router, db)
 
     private var menu: Menu? = null
+    private var dialogDeleteNote: AlertDialog? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -82,16 +85,41 @@ class NoteScreen(private var note: Note? = null) : MvpAppCompatFragment(R.layout
     private fun currentTitle() = title_note.text.toString()
     private fun currentContent() = content_note.text.toString()
 
-    override fun setDate(date: String) {
-        date_note.text = date
-    }
-
     override fun setTitle(title: String) {
         title_note.append(title)
     }
 
     override fun setContent(content: String) {
         content_note.append(content)
+    }
+
+    override fun setDate(date: String) {
+        date_note.text = date
+    }
+
+    override fun btnSaveVisible(visible: Boolean) {
+        menu?.let { it.findItem(R.id.save_note).isVisible = visible }
+    }
+
+    override fun showDialogDeleteNote() {
+        val view = layoutInflater.inflate(R.layout.dialog_delete_note, null)
+        view.findViewById<Button>(R.id.confirm_delete).setOnClickListener {
+            presenter.confirmDeletionNote()
+        }
+        view.findViewById<Button>(R.id.cancel_delete).setOnClickListener {
+            presenter.cancelDeletionNote()
+        }
+
+        dialogDeleteNote = context?.let {
+            AlertDialog.Builder(it)
+                .setView(view)
+                .setOnDismissListener { presenter.dismissDialog() }
+                .show()
+        }
+    }
+
+    override fun hideDialogDeleteNote() {
+        dialogDeleteNote?.dismiss()
     }
 
     override fun showKeyboard() {
@@ -113,11 +141,14 @@ class NoteScreen(private var note: Note? = null) : MvpAppCompatFragment(R.layout
         }
     }
 
-    override fun btnSaveVisible(visible: Boolean) {
-        menu?.let { it.findItem(R.id.save_note).isVisible = visible }
-    }
-
     override fun showMessage(message: Int) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        dialogDeleteNote?.setOnDismissListener(null)
+        dialogDeleteNote?.dismiss()
     }
 }

@@ -8,4 +8,7 @@
     <string name="menu_item_delete_note">delete</string>
     <string name="note_saved">заметка сохранена</string>
     <string name="note_deleted">заметка удалена</string>
+    <string name="title_dialog_delete_note">Удалить заметку?</string>
+    <string name="cancel_delete">Отмена</string>
+    <string name="confirm_delete">Удалить</string>
 </resources>
