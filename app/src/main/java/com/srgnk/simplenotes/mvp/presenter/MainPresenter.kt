@@ -19,8 +19,7 @@ class MainPresenter @Inject constructor(
     private val db: NoteDatabase
 ) : MvpPresenter<MainView>() {
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
+    fun viewResume() {
         getAllNotes()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -47,8 +46,11 @@ class MainPresenter @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { notes ->
-                val foundNotes = notes.filter { it.title.contains(request, ignoreCase = true) }
-                viewState.initAdapter(foundNotes.toMutableList())
+                if (request.isBlank()) viewState.initAdapter(notes)
+                else {
+                    val foundNotes = notes.filter { it.title.contains(request, ignoreCase = true) }
+                    viewState.initAdapter(foundNotes.toMutableList())
+                }
             }
     }
 

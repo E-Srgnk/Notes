@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp">
+    android:paddingStart="11dp"
+    android:paddingEnd="11dp">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -39,32 +39,18 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <SearchView
+            android:id="@+id/searchNote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/rounded_edit_text"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            android:padding="5dp">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="@drawable/ic_search"
-                android:padding="3dp" />
-
-            <EditText
-                android:id="@+id/searchNote"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/transparent"
-                android:ems="10"
-                android:hint="@string/search_notes"
-                android:inputType="text"
-                android:paddingStart="10dp"
-                android:textSize="14sp" />
-        </LinearLayout>
+            android:ems="10"
+            android:inputType="text"
+            android:queryHint="@string/search_notes"
+            android:textSize="14sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"

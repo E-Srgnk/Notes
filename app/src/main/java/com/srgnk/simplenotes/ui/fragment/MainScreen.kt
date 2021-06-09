@@ -2,8 +2,9 @@ package com.srgnk.simplenotes.ui.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import androidx.core.widget.addTextChangedListener
+import android.widget.SearchView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.srgnk.simplenotes.R
 import com.srgnk.simplenotes.databinding.FragmentMainBinding
@@ -13,8 +14,12 @@ import com.srgnk.simplenotes.mvp.view.MainView
 import com.srgnk.simplenotes.ui.activity.AppActivity
 import com.srgnk.simplenotes.ui.adapter.RecyclerAdapter
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.ObservableOnSubscribe
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -44,9 +49,28 @@ class MainScreen : MvpAppCompatFragment(R.layout.fragment_main),
             presenter.clickedFubButton()
         }
 
-        binding.searchNote.addTextChangedListener {
-            presenter.searchNotes(binding.searchNote.text.toString())
-        }
+        binding.searchNote.setOnClickListener { binding.searchNote.isIconified = false }
+        setSearchViewQueryTextListener()
+    }
+
+    private fun setSearchViewQueryTextListener() {
+        Observable.create(ObservableOnSubscribe<String> { subscriber ->
+            binding.searchNote.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    subscriber.onNext(newText!!)
+                    return false
+                }
+
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    subscriber.onNext(query!!)
+                    return false
+                }
+            })
+        }).map { text -> text.lowercase(Locale.getDefault()).trim() }
+            .debounce(350, TimeUnit.MILLISECONDS)
+            .subscribe { text ->
+                presenter.searchNotes(text)
+            }
     }
 
     override fun initAdapter(items: MutableList<Note>) {
@@ -57,6 +81,11 @@ class MainScreen : MvpAppCompatFragment(R.layout.fragment_main),
 
     override fun recyclerViewClickListener(noteId: Long) {
         presenter.clickedRecyclerItem(noteId)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter.viewResume()
     }
 
     override fun onDestroy() {
