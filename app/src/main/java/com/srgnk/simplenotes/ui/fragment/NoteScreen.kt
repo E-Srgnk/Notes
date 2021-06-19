@@ -19,12 +19,13 @@ import com.srgnk.simplenotes.mvp.model.NoteDatabase
 import com.srgnk.simplenotes.mvp.presenter.NotePresenter
 import com.srgnk.simplenotes.mvp.view.NoteView
 import com.srgnk.simplenotes.ui.activity.AppActivity
-import dagger.android.support.AndroidSupportInjection
+import dagger.hilt.android.AndroidEntryPoint
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class NoteScreen(private var note: Note? = null) : MvpAppCompatFragment(R.layout.fragment_note),
     NoteView {
 
@@ -45,11 +46,6 @@ class NoteScreen(private var note: Note? = null) : MvpAppCompatFragment(R.layout
 
     private var menu: Menu? = null
     private var dialogDeleteNote: AlertDialog? = null
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        AndroidSupportInjection.inject(this)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

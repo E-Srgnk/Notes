@@ -1,10 +1,7 @@
 package com.srgnk.simplenotes
 
-import com.srgnk.simplenotes.di.DaggerAppComponent
-import dagger.android.AndroidInjector
-import dagger.android.DaggerApplication
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
-class SimpleNotesApp: DaggerApplication() {
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> =
-        DaggerAppComponent.factory().create(this)
-}
+@HiltAndroidApp
+class SimpleNotesApp : Application() {}

@@ -7,16 +7,14 @@ import com.srgnk.simplenotes.R
 import com.srgnk.simplenotes.mvp.presenter.AppPresenter
 import com.srgnk.simplenotes.mvp.view.AppView
 import com.srgnk.simplenotes.ui.navigation.CustomNavigator
-import dagger.android.AndroidInjection
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
+import dagger.hilt.android.AndroidEntryPoint
 import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AppActivity : MvpAppCompatActivity(), HasAndroidInjector, AppView {
+@AndroidEntryPoint
+class AppActivity : MvpAppCompatActivity(), AppView {
 
     @Inject
     lateinit var presenterProvider: Provider<AppPresenter>
@@ -26,12 +24,7 @@ class AppActivity : MvpAppCompatActivity(), HasAndroidInjector, AppView {
     lateinit var navigationHolder: NavigatorHolder
     private val navigator: Navigator = CustomNavigator(this, R.id.appFrame)
 
-    @Inject
-    lateinit var injector: DispatchingAndroidInjector<Any>
-    override fun androidInjector(): AndroidInjector<Any> = injector
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app)
     }
