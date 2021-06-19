@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -67,6 +68,10 @@ dependencies {
     implementation 'com.google.dagger:dagger-android:2.35.1'
     implementation 'com.google.dagger:dagger-android-support:2.33'
     kapt 'com.google.dagger:dagger-android-processor:2.33'
+
+    // Hilt
+    implementation 'com.google.dagger:hilt-android:2.35'
+    kapt 'com.google.dagger:hilt-android-compiler:2.35'
 
     // RxJava
     implementation 'io.reactivex.rxjava3:rxjava:3.0.12'
