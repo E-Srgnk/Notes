@@ -2,14 +2,14 @@ package com.srgnk.simplenotes.mvp.presenter
 
 import com.github.terrakok.cicerone.Router
 import com.srgnk.simplenotes.R
+import com.srgnk.simplenotes.mvp.model.DatabaseRepository
 import com.srgnk.simplenotes.mvp.model.Note
-import com.srgnk.simplenotes.mvp.model.NoteDatabase
 import com.srgnk.simplenotes.utils.getFormattedDate
 import com.srgnk.simplenotes.mvp.view.NoteView
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import moxy.InjectViewState
 import moxy.MvpPresenter
+import moxy.presenterScope
 import java.util.*
 import javax.inject.Inject
 
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class NotePresenter @Inject constructor(
     private var note: Note?,
     private val router: Router,
-    private val db: NoteDatabase
+    private val repository: DatabaseRepository
 ) : MvpPresenter<NoteView>() {
 
     private val createDate: Date by lazy { Date() }
@@ -44,19 +44,17 @@ class NotePresenter @Inject constructor(
     }
 
     private fun saveNote(title: String, content: String) {
-        Observable.just(db)
-            .subscribeOn(Schedulers.io())
-            .subscribe {
-                if (isNewNote()) {
-                    note = Note(title, content, createDate.time)
-                } else {
-                    note?.title = title
-                    note?.content = content
-                    note?.date = Date().time
-                }
-                val noteId = it.noteDao().insert(note!!)
-                note?.id = noteId
-            }
+        if (isNewNote()) {
+            note = Note(title, content, createDate.time)
+        } else {
+            note?.title = title
+            note?.content = content
+            note?.date = Date().time
+        }
+        presenterScope.launch {
+            val noteId = repository.insert(note!!)
+            note?.id = noteId
+        }
     }
 
     fun clickedDeleteNote() {
@@ -68,12 +66,10 @@ class NotePresenter @Inject constructor(
     }
 
     private fun deleteNote() {
-        note?.let { note ->
-            Observable.just(db)
-                .subscribeOn(Schedulers.io())
-                .subscribe {
-                    it.noteDao().delete(note)
-                }
+        note?.let {
+            presenterScope.launch {
+                repository.delete(it)
+            }
         }
     }
 

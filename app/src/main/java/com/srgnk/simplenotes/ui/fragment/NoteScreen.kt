@@ -15,7 +15,7 @@ import com.github.terrakok.cicerone.Router
 import com.srgnk.simplenotes.R
 import com.srgnk.simplenotes.databinding.FragmentNoteBinding
 import com.srgnk.simplenotes.mvp.model.Note
-import com.srgnk.simplenotes.mvp.model.NoteDatabase
+import com.srgnk.simplenotes.mvp.model.NoteRepository
 import com.srgnk.simplenotes.mvp.presenter.NotePresenter
 import com.srgnk.simplenotes.mvp.view.NoteView
 import com.srgnk.simplenotes.ui.activity.AppActivity
@@ -34,15 +34,13 @@ class NoteScreen(private var note: Note? = null) : MvpAppCompatFragment(R.layout
 
     @Inject
     lateinit var router: Router
-
     @Inject
-    lateinit var db: NoteDatabase
+    lateinit var repository: NoteRepository
 
     @InjectPresenter
     lateinit var presenter: NotePresenter
-
     @ProvidePresenter
-    fun providePresenter() = NotePresenter(note, router, db)
+    fun providePresenter() = NotePresenter(note, router, repository)
 
     private var menu: Menu? = null
     private var dialogDeleteNote: AlertDialog? = null
