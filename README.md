@@ -1,3 +1,3 @@
 # Notes
 Приложение Заметки. 
-Использованы библиотеки: Moxy, Room, Cicerone, Hilt, RxJava, Coroutines.
+Moxy, Room, Cicerone, Hilt, RxJava, Coroutines.
